@@ -59,6 +59,7 @@ jobs:
         run : |
           echo 'export PATH="/home/ubuntu/miniconda/bin:$PATH"' >> ~/.bashrc
           source ~/.bashrc
+          source .bashrc 
 
       # Install Python dependencies (if you have a requirements.txt file)
       - name: Install Python dependencies
