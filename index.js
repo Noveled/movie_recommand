@@ -58,37 +58,56 @@ app.get('/random/:count', (req, res) => {
 
 // get latest
 app.get('/latest/:count', (req, res) => {
-  const firstParam = "latest";
-  const secondParam = req.params.count; // URL의 :count 값을 가져와 저장
-  
-  const scriptPath = path.join(__dirname, "resolver.py")
-  // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
-  const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
+  try {
+    const count = parseInt(req.params.count);
+    // EC2 서버에서 현재 실행 중인 Node.js 파일의 절대 경로를 기준으로 설정.
+    const scriptPath = path.join(__dirname, 'resolver.py');
+    const pythonPath = path.join('C:', 'conda', 'envs', 'venv', 'python.exe');
 
-  const result = spawn(pythonPath, [scriptPath, firstParam, secondParam]);
-  let responseData = '';
 
-  // Python script 출력 결과를 받아온다.
-  result.stdout.on('data', (data) => {
-    responseData += data.toString();
-  });
-  
-  // child process 이벤트 종료시 핸들링
-  result.on('close', (code) => {
-    if (code === 0) {
-      const jsonResponse = JSON.parse(responseData);
-      res.status(200).json(jsonResponse);
-    } else {
-      res
-        .status(500).json({ error: `Child process exited with code ${code}` });
-    }
-  });
+    // Spawn the Python process with the correct argument
+    const result = spawn(pythonPath, [scriptPath, 'latest', count]);
 
-  // Python script Error 출력
-  result.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-  });
+
+    let responseData = '';
+    let errorData = '';
+
+
+    // Listen for data from the Python script
+    result.stdout.on('data', (data) => {
+      responseData += data.toString();
+    });
+
+
+    // Listen for errors from the Python script
+    result.stderr.on('data', (data) => {
+      errorData += data.toString(); // Collect stderr data
+      console.error(`stderr: ${data}`); // Log the error
+    });
+
+
+    // Handle the close event of the child process
+    result.on('close', (code) => {
+      if (code === 0) {
+        try {
+          const jsonResponse = JSON.parse(responseData);
+          res.status(200).json(jsonResponse);
+        } catch (error) {
+          res
+            .status(500)
+            .json({ error: 'Failed to parse Python output as JSON' });
+        }
+      } else {
+        res.status(500).json({
+          error: errorData || `Child process exited with code ${code}`,
+        });
+      }
+    });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
 });
+
 
 // get genres
 app.get('/genres/:genre/:count', (req, res) => {
