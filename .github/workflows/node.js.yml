@@ -55,10 +55,11 @@ jobs:
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
           bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
         
+
+        # echo 'export PATH="/home/ubuntu/miniconda/bin:$PATH"' >> ~/.bashrc
+        #   source ~/.bashrc
       - name: init mini conda
         run : |
-          echo 'export PATH="/home/ubuntu/miniconda/bin:$PATH"' >> ~/.bashrc
-          source ~/.bashrc
           source .bashrc 
 
       # Install Python dependencies (if you have a requirements.txt file)
