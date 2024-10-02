@@ -4,7 +4,7 @@ import sys
 import re
 
 
-item_fname = "data/movie_final.csv"
+item_fname = "./data/movie_final.csv"
 columns = ['id', 'title', 'genres', 'imdb_id', 'tmdb_id', 'imdb_url', 'rating_count', 'rating_avg', 'image_url']
 
 def random_items(count):
