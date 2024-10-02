@@ -55,8 +55,7 @@ jobs:
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
           bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
           source ~/.bashrc
-          echo 'export PATH="/home/ubuntu/miniconda/bin:$PATH"' >> ~/.bashrc
-          source ~/.bashrc
+          export PATH=~/miniconda/bin:$PATH
 
       # Install Python dependencies (if you have a requirements.txt file)
       - name: Install Python dependencies
