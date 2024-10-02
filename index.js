@@ -9,7 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 // get /
-app.get('/', (req, res) => {
+app.get('/test', (req, res) => {
   const scriptPath = path.join(__dirname, "resolver.py")
   // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
   const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
