@@ -62,7 +62,7 @@ app.get('/latest/:count', (req, res) => {
     const count = parseInt(req.params.count);
     // EC2 서버에서 현재 실행 중인 Node.js 파일의 절대 경로를 기준으로 설정.
     const scriptPath = path.join(__dirname, 'resolver.py');
-    const pythonPath = path.join('C:', 'conda', 'envs', 'venv', 'python.exe');
+    const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
 
     // Spawn the Python process with the correct argument
