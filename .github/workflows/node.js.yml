@@ -49,13 +49,17 @@ jobs:
       #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       # Install conda mini
-      - name: Set up Python 3.12.6
+      - name: Set up miniconda
         run : |
           cd ~
           wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
           bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
-          source .bashrc 
         
+      - name: init mini conda
+        run : |
+          export PATH=~/miniconda/bin:$PATH
+          source .bashrc 
+
       # Install Python dependencies (if you have a requirements.txt file)
       - name: Install Python dependencies
         run: |
