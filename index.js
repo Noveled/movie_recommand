@@ -15,7 +15,7 @@ app.get('/test', (req, res) => {
   const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
   // const result = spawn(pythonPath, [scriptPath]);
-  res.send('__dirname', __dirname, 'scriptPath', scriptPath, 'pythonPath', pythonPath);
+  res.send(`'__dirname', ${__dirname}, 'scriptPath', ${scriptPath}, 'pythonPath', ${pythonPath}`);
 });
 
 // get random
