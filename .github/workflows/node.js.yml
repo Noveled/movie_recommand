@@ -37,17 +37,37 @@ jobs:
 
 
       # Create and activate Python virtual environment
-      - name: Set up Python virtual environment
-        run: |
-          python -m venv venv
-          source venv/bin/activate
+      # - name: Set up Python virtual environment
+      #   run: |
+      #     python -m venv venv
+      #     source venv/bin/activate
 
+      # # Install Python dependencies (if you have a requirements.txt file)
+      # - name: Install Python dependencies
+      #   run: |
+      #     source venv/bin/activate
+      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # Install conda mini
+      - name: Set up Python 3.12.6
+        run : |
+          cd ~
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+          bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
+          source ~/.bashrc
+          echo 'export PATH="/home/ubuntu/miniconda/bin:$PATH"' >> ~/.bashrc
+          source ~/.bashrc
 
       # Install Python dependencies (if you have a requirements.txt file)
       - name: Install Python dependencies
         run: |
-          source venv/bin/activate
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          conda create -n recom -y
+          conda init
+          source .bashrc 
+          conda activate recom
+          pip install -r actions-runner/_work/movie_recommand/movie_recommand/requirements.txt
+          conda install implicit
+      
 
 
       - run: pm2 restart BackendAPI
