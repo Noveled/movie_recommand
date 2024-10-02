@@ -29,47 +29,25 @@ jobs:
           cache: 'npm'
       - run: npm ci
 
-      # # Set up Python environment1
-      # - name: Set up Python 3.12.6
-      #   uses: actions/setup-python@v4
-      #   with:
-      #     python-version: '3.12.6'
+      # Set up Python environment
+      - name: Set up Python 3.12.6
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12.6'
 
 
       # Create and activate Python virtual environment
-      # - name: Set up Python virtual environment
-      #   run: |
-      #     python -m venv venv
-      #     source venv/bin/activate
+      - name: Set up Python virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
 
-      # # Install Python dependencies (if you have a requirements.txt file)
-      # - name: Install Python dependencies
-      #   run: |
-      #     source venv/bin/activate
-      #     if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
-      # Install conda mini
-      - name: Set up miniconda
-        run : |
-          cd ~
-          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
-          bash Miniconda3-latest-Linux-x86_64.sh -b -p ~/miniconda
-        
-      - name: init mini conda
-        run : |
-          export PATH=~/miniconda/bin:$PATH
-          source ~/.bashrc
 
       # Install Python dependencies (if you have a requirements.txt file)
       - name: Install Python dependencies
         run: |
-          conda create -n recom -y
-          conda init
-          source .bashrc 
-          conda activate recom
-          pip install -r actions-runner/_work/movie_recommand/movie_recommand/requirements.txt
-          conda install implicit
-      
+          source venv/bin/activate
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
 
       - run: pm2 restart BackendAPI
