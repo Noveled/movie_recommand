@@ -14,8 +14,8 @@ app.get('/', (req, res) => {
   // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
   const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
-  const result = spawn(pythonPath, [scriptPath]);
-  res.send('__dirname', __dirname, 'result', result);
+  // const result = spawn(pythonPath, [scriptPath]);
+  res.send('__dirname', __dirname, 'scriptPath', scriptPath, 'pythonPath', pythonPath);
 });
 
 // get random
