@@ -153,11 +153,45 @@ app.get('/item-based/:item', (req, res) => {
   
   const scriptPath = path.join(__dirname, "recommender.py")
   // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
-  const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
-
 
   const result = spawn(pythonExePath, [scriptPath, firstParam, secondParam]);
   let responseData = '';
+
+  // Python script 출력 결과를 받아온다.
+  result.stdout.on('data', (data) => {
+    responseData += data.toString();
+  });
+  
+  // child process 이벤트 종료시 핸들링
+  result.on('close', (code) => {
+    if (code === 0) {
+      const jsonResponse = JSON.parse(responseData);
+      res.status(200).json(jsonResponse);
+    } else {
+      res
+        .status(500).json({ error: `Child process exited with code ${code}` });
+    }
+  });
+
+  // Python script Error 출력
+  result.stderr.on('data', (data) => {
+    console.error(`stderr: ${data}`);
+  });
+});
+
+app.post('/user-based', (req, res) => {
+  const firstParam = "user-based";
+
+  const scriptPath = path.join(__dirname, "recommender.py")
+
+  const inputRatingDict = req.body;
+
+  const result = spawn(pythonExePath, [scriptPath, firstParam]);
+  let responseData = '';
+
+  // 파이썬 스크립트로 JSON 데이터를 전달
+  result.stdin.write(JSON.stringify(inputRatingDict));
+  result.stdin.end(); // 더 이상 데이터가 없으면 전달 끝
 
   // Python script 출력 결과를 받아온다.
   result.stdout.on('data', (data) => {
