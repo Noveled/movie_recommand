@@ -4,20 +4,28 @@ const path = require('path');
 const spawn = require('child_process').spawn;
 const port = 8080;
 const app = express();
+require('dotenv').config();
 
 app.use(cors());
 app.use(express.json());
 
-// get /
-app.get('/test', (req, res) => {
-  const scriptPath = path.join(__dirname, "resolver.py")
-  // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
-  const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
+const isDevelopment = () => {
+  return process.env.NODE_ENV === 'development';
+};
 
-  const result = spawn(pythonPath, [scriptPath]);
-  res.send({'result': result});
-  // res.send(`'__dirname', ${__dirname}, 'scriptPath', ${scriptPath}, 'pythonPath', ${pythonPath}`);
-  // res.send({'__dirname': __dirname, 'scriptPath': scriptPath, 'pythonPath': pythonPath});
+const pythonExePath = isDevelopment() 
+  ? path.join("C:", "conda", "envs", "recom_env", "python.exe")
+  :  path.join(
+    '/home/ubuntu/miniconda',
+    'envs',
+    'myenv',
+    'bin',
+    'python3'
+  );
+
+// get /
+app.get('/', (req, res) => {
+  res.send('Hello from movie_recommend node server!');
 
 });
 
@@ -27,10 +35,8 @@ app.get('/random/:count', (req, res) => {
   const secondParam = req.params.count; // URL의 :count 값을 가져와 저장
   
   const scriptPath = path.join(__dirname, "resolver.py")
-  // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
-  const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
-  const result = spawn(pythonPath, [scriptPath, firstParam, secondParam]);
+  const result = spawn(pythonExePath, [scriptPath, firstParam, secondParam]);
   let responseData = '';
 
   // Python script 출력 결과를 받아온다.
@@ -62,11 +68,10 @@ app.get('/latest/:count', (req, res) => {
     const count = parseInt(req.params.count);
     // EC2 서버에서 현재 실행 중인 Node.js 파일의 절대 경로를 기준으로 설정.
     const scriptPath = path.join(__dirname, 'resolver.py');
-    const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
 
     // Spawn the Python process with the correct argument
-    const result = spawn(pythonPath, [scriptPath, 'latest', count]);
+    const result = spawn(pythonExePath, [scriptPath, 'latest', count]);
 
 
     let responseData = '';
@@ -116,10 +121,8 @@ app.get('/genres/:genre/:count', (req, res) => {
   const thirdParam = req.params.count; // URL의 :count 값을 가져와 저장
   
   const scriptPath = path.join(__dirname, "resolver.py")
-  // const pythonPath = path.join("C:", "conda", "envs", "recom_env", "python.exe");
-  const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
-  const result = spawn(pythonPath, [scriptPath, firstParam, secondParam, thirdParam]);
+  const result = spawn(pythonExePath, [scriptPath, firstParam, secondParam, thirdParam]);
   let responseData = '';
 
   // Python script 출력 결과를 받아온다.
@@ -153,7 +156,7 @@ app.get('/item-based/:item', (req, res) => {
   const pythonPath = path.join(__dirname, 'venv', 'bin', 'python3');
 
 
-  const result = spawn(pythonPath, [scriptPath, firstParam, secondParam]);
+  const result = spawn(pythonExePath, [scriptPath, firstParam, secondParam]);
   let responseData = '';
 
   // Python script 출력 결과를 받아온다.
